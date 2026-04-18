@@ -1,0 +1,25 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('api', {
+  getGames:       ()            => ipcRenderer.invoke('db:getGames'),
+  addGame:        (data)        => ipcRenderer.invoke('db:addGame', data),
+  removeGame:     (id)          => ipcRenderer.invoke('db:removeGame', id),
+  updateGameName: (id, name)    => ipcRenderer.invoke('db:updateGameName', { id, name }),
+  searchGames:    (q)           => ipcRenderer.invoke('db:searchGames', q),
+  getFolders:     ()            => ipcRenderer.invoke('db:getFolders'),
+  addFolder:      (p, type)     => ipcRenderer.invoke('db:addFolder', { folderPath: p, type }),
+  removeFolder:   (id)          => ipcRenderer.invoke('db:removeFolder', id),
+  getSetting:     (key)         => ipcRenderer.invoke('db:getSetting', key),
+  setSetting:     (key, value)  => ipcRenderer.invoke('db:setSetting', { key, value }),
+  isFirstRun:     ()            => ipcRenderer.invoke('db:isFirstRun'),
+  scanFolder:     (p)           => ipcRenderer.invoke('scan:folder', p),
+  importResults:  (data)        => ipcRenderer.invoke('scan:importResults', data),
+  detectSteam:    ()            => ipcRenderer.invoke('steam:detectLibraries'),
+  launchGame:     (exePath)     => ipcRenderer.invoke('game:launch', exePath),
+  openFolder:     (exePath)     => ipcRenderer.invoke('game:openFolder', exePath),
+  selectFolder:   ()            => ipcRenderer.invoke('dialog:selectFolder'),
+  selectExe:      ()            => ipcRenderer.invoke('dialog:selectExe'),
+  minimize:       ()            => ipcRenderer.send('window:minimize'),
+  maximize:       ()            => ipcRenderer.send('window:maximize'),
+  close:          ()            => ipcRenderer.send('window:close'),
+});

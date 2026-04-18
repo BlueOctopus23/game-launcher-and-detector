@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';" />
+  <title>GameLauncher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Titlebar -->
+<div id="titlebar">
+  <span id="titlebar-title">◈ GAME LAUNCHER</span>
+  <div id="titlebar-controls">
+    <button id="btn-min">─</button>
+    <button id="btn-max">□</button>
+    <button id="btn-close">✕</button>
+  </div>
+</div>
+
+<!-- First-run overlay -->
+<div id="first-run-overlay" class="hidden">
+  <div id="first-run-box">
+    <div class="fr-step active" id="fr-step-1">
+      <div class="fr-icon">◈</div>
+      <h1>Bienvenido a<br><span>GAME LAUNCHER</span></h1>
+      <p>Primera vez que abres la app.<br>Vamos a configurarla en 2 pasos.</p>
+      <button class="btn-primary" onclick="frNext()">Empezar →</button>
+    </div>
+    <div class="fr-step" id="fr-step-2">
+      <div class="fr-icon">📂</div>
+      <h2>Añade tus carpetas de juegos</h2>
+      <p id="fr-steam-note" style="color:var(--success);font-size:12px;font-family:var(--font-mono)"></p>
+      <p style="color:var(--subtext);font-size:12px">Puedes añadir más carpetas más tarde desde Ajustes.</p>
+      <div id="fr-folders-list"></div>
+      <div class="fr-btns">
+        <button class="btn-secondary" onclick="frAddFolder()">+ Añadir carpeta</button>
+        <button class="btn-primary" onclick="frScan()">Escanear y finalizar →</button>
+      </div>
+    </div>
+    <div class="fr-step" id="fr-step-3">
+      <div class="fr-icon scan-spin">⟳</div>
+      <h2>Escaneando...</h2>
+      <p id="fr-scan-status">Buscando juegos en tus carpetas...</p>
+    </div>
+    <div class="fr-step" id="fr-step-4">
+      <div class="fr-icon">✓</div>
+      <h2>¡Listo!</h2>
+      <p>Se encontraron <strong id="fr-count">0</strong> juegos.</p>
+      <button class="btn-primary" onclick="frFinish()">Ir al launcher →</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <aside id="sidebar">
+    <nav>
+      <button class="nav-btn active" data-view="grid">
+        <span class="nav-icon">⊞</span><span class="nav-label">Todos</span>
+      </button>
+      <button class="nav-btn" data-view="recent">
+        <span class="nav-icon">◷</span><span class="nav-label">Recientes</span>
+      </button>
+      <button class="nav-btn" data-view="favorites">
+        <span class="nav-icon">♥</span><span class="nav-label">Favoritos</span>
+      </button>
+    </nav>
+    <div class="sidebar-sep"></div>
+    <div id="folder-list-sidebar"></div>
+    <div class="sidebar-bottom">
+      <button class="nav-btn" data-view="settings">
+        <span class="nav-icon">⚙</span><span class="nav-label">Ajustes</span>
+      </button>
+    </div>
+  </aside>
+
+  <main id="content">
+    <div id="toolbar">
+      <div id="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Buscar juego..." autocomplete="off" />
+        <kbd id="search-clear" class="hidden">✕</kbd>
+      </div>
+      <div id="toolbar-actions">
+        <button class="btn-icon" id="btn-scan">↻ Escanear</button>
+        <button class="btn-icon accent" id="btn-add-folder">+ Carpeta</button>
+        <button class="btn-icon" id="btn-add-exe">+ .exe</button>
+      </div>
+      <div id="game-count"></div>
+    </div>
+
+    <div id="view-grid"     class="view active"></div>
+    <div id="view-recent"   class="view">
+      <div class="view-header"><h2>Jugados recientemente</h2></div>
+      <div id="recent-grid" class="game-grid"></div>
+    </div>
+    <div id="view-favorites" class="view">
+      <div class="view-header"><h2>Favoritos</h2></div>
+      <div id="fav-grid" class="game-grid"></div>
+    </div>
+    <div id="view-settings"  class="view">
+      <div class="view-header"><h2>⚙ Ajustes</h2></div>
+      <div id="settings-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Context menu -->
+<div id="ctx-menu" class="hidden">
+  <button id="ctx-launch">▶ Lanzar</button>
+  <button id="ctx-folder">📂 Abrir carpeta</button>
+  <button id="ctx-rename">✎ Renombrar</button>
+  <button id="ctx-remove" class="danger">✕ Eliminar</button>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Rename modal -->
+<div id="rename-modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Renombrar juego</h3>
+    <input id="rename-input" type="text" placeholder="Nuevo nombre" />
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeRename()">Cancelar</button>
+      <button class="btn-primary"   onclick="confirmRename()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
