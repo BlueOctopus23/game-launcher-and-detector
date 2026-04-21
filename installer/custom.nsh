@@ -7,6 +7,10 @@
   !system "echo Compilando con pagina de detalles..."
 !macroend
 
+!macro customInstallDir
+  StrCpy $INSTDIR "$PROGRAMFILES64\BlueLauncher\BlueLauncher"
+!macroend
+
 !macro customInstall
   ; Mostrar en la barra de estado cada componente copiado
   DetailPrint "Copiando aplicacion Electron (GameLauncher.exe)..."

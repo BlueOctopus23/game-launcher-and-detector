@@ -14,8 +14,8 @@
   },
   
   "build": {
-    "appId": "com.proyectgameloader.app",
-    "productName": "Game Launcher & Organizer",
+    "appId": "com.bluelauncher.app",
+    "productName": "BlueLauncher",
     "directories": { "output": "dist" },
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
