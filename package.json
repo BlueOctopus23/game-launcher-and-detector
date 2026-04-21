@@ -1,0 +1,48 @@
+{
+  "name": "game-launcher",
+  "version": "1.0.0",
+  "description": "Game Launcher",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "author": {
+  "name": "BlueSquid23",
+  "email": "why?@why.com",
+  "url": "https://really?.com"
+  },
+  
+  "build": {
+    "appId": "com.proyectgameloader.app",
+    "productName": "Game Launcher & Organizer",
+    "directories": { "output": "dist" },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "src/assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Game Launcher",
+      "runAfterFinish": true,
+      "include": "installer/custom.nsh"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0"
+  },
+  "devDependencies": {
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3"
+  },
+  "license": "MIT"
+}

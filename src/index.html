@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.akamai.steamstatic.com https://store.steampowered.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 img-src 'self' data: https://cdn.akamai.steamstatic.com https://store.steampowered.com;
+                 script-src 'self' 'unsafe-inline';" />
+  <title>GameLauncher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Titlebar -->
+<div id="titlebar">
+  <span id="titlebar-title">◈ GAME LAUNCHER</span>
+  <div id="titlebar-controls">
+    <button id="btn-min">─</button>
+    <button id="btn-max">□</button>
+    <button id="btn-close">✕</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     WIZARD DE PRIMER ARRANQUE
+═════════════════════════════════════════════════════════ -->
+<div id="first-run-overlay" class="hidden">
+  <div id="first-run-box">
+
+    <div class="fr-step active" id="fr-step-1">
+      <div class="fr-icon">◈</div>
+      <h1>Bienvenido a<br><span>GAME LAUNCHER</span></h1>
+      <p>Vamos a configurar la app en unos pasos rápidos.</p>
+      <button class="btn-primary" onclick="frGoStep(2)">Empezar →</button>
+    </div>
+
+    <div class="fr-step" id="fr-step-2">
+      <div class="fr-icon">📂</div>
+      <h2>Lugares de instalación</h2>
+      <p style="color:var(--subtext);font-size:12px">Selecciona dónde tienes juegos instalados.</p>
+      <div id="fr-common-paths" class="fr-checklist"></div>
+      <div class="fr-btns">
+        <button class="btn-secondary" onclick="frGoStep(1)">← Atrás</button>
+        <button class="btn-primary"   onclick="frGoStep(3)">Siguiente →</button>
+      </div>
+    </div>
+
+    <div class="fr-step" id="fr-step-3">
+      <div class="fr-icon">🔍</div>
+      <h2>Auto-búsqueda de juegos</h2>
+      <p style="color:var(--subtext);font-size:12px">¿Buscar juegos nuevos automáticamente al iniciar?</p>
+      <div class="fr-toggle-row">
+        <label class="fr-toggle-label">
+          <div><strong>Activar auto-búsqueda al inicio</strong>
+            <div style="font-size:11px;color:var(--subtext);margin-top:3px">Escanea tus carpetas en cada arranque</div></div>
+          <div class="toggle-switch" id="fr-toggle-autoscan" onclick="frToggleAutoscan()"><div class="toggle-knob"></div></div>
+        </label>
+        <label class="fr-toggle-label" style="margin-top:8px">
+          <div><strong>Pedir permisos de administrador</strong>
+            <div style="font-size:11px;color:var(--subtext);margin-top:3px">Para acceder a todas las carpetas</div></div>
+          <div class="toggle-switch" id="fr-toggle-admin" onclick="frToggleAdmin()"><div class="toggle-knob"></div></div>
+        </label>
+      </div>
+      <div class="fr-btns">
+        <button class="btn-secondary" onclick="frGoStep(2)">← Atrás</button>
+        <button class="btn-primary"   onclick="frGoStep(4)">Siguiente →</button>
+      </div>
+    </div>
+
+    <div class="fr-step" id="fr-step-4">
+      <div class="fr-icon">🎨</div>
+      <h2>Color de acento</h2>
+      <p style="color:var(--subtext);font-size:12px">Puedes cambiarlo después en Ajustes.</p>
+      <div class="fr-accent-grid" id="fr-accent-grid"></div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+        <label style="font-size:11px;color:var(--subtext);font-family:var(--font-mono)">Personalizado:</label>
+        <input type="color" id="fr-custom-color" value="#e84855"
+               style="width:36px;height:28px;border:none;background:transparent;cursor:pointer;padding:0"
+               oninput="frPickCustomColor(this.value)" />
+      </div>
+      <div class="fr-btns">
+        <button class="btn-secondary" onclick="frGoStep(3)">← Atrás</button>
+        <button class="btn-primary"   onclick="frGoStep(5)">Siguiente →</button>
+      </div>
+    </div>
+
+    <div class="fr-step" id="fr-step-5">
+      <div class="fr-icon">⚙</div>
+      <h2>Ajustes adicionales</h2>
+      <p style="color:var(--subtext);font-size:12px">Configura opciones extra.</p>
+      <div class="fr-extra-settings">
+        <!-- ══ ZONA DE CONFIGURACIONES PERSONALIZADAS ════════════════════════
+             Añade tus opciones aquí. Ejemplos:
+
+             Toggle:
+             <label class="fr-toggle-label">
+               <div>
+                 <strong>Nombre opción</strong>
+                 <div style="font-size:11px;color:var(--subtext)">Descripción</div>
+               </div>
+               <div class="toggle-switch" id="fr-toggle-MI_ID"
+                    onclick="frToggleCustom('MI_ID','mi_setting_key')">
+                 <div class="toggle-knob"></div>
+               </div>
+             </label>
+
+             Input de texto:
+             <div class="fr-setting-row">
+               <label>Nombre</label>
+               <input id="fr-input-MI_NOMBRE" type="text" placeholder="Valor..." />
+             </div>
+        ════════════════════════════════════════════════════════════════════ -->
+        <div style="color:var(--subtext);font-size:12px;font-family:var(--font-mono);
+                    border:1px dashed var(--border);border-radius:6px;padding:14px;text-align:center;line-height:1.8">
+          📝 Espacio para tus configuraciones.<br>
+          Edita <code>src/index.html</code> → bloque <code>fr-step-5</code><br>
+          y <code>src/js/app.js</code> → función <code>frSaveExtras()</code>
+        </div>
+      </div>
+      <div class="fr-btns">
+        <button class="btn-secondary" onclick="frGoStep(4)">← Atrás</button>
+        <button class="btn-primary"   onclick="frScan()">Escanear y finalizar →</button>
+      </div>
+    </div>
+
+    <div class="fr-step" id="fr-step-6">
+      <div class="fr-icon scan-spin">⟳</div>
+      <h2>Escaneando...</h2>
+      <p id="fr-scan-status" style="font-size:11px;font-family:var(--font-mono);color:var(--subtext);word-break:break-all">Preparando escaneo…</p>
+    </div>
+
+    <div class="fr-step" id="fr-step-7">
+      <div class="fr-icon">✓</div>
+      <h2>¡Listo!</h2>
+      <p>Se encontraron <strong id="fr-count">0</strong> juegos.</p>
+      <button class="btn-primary" onclick="frFinish()">Ir al launcher →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     APP
+═════════════════════════════════════════════════════════ -->
+<div id="app">
+  <aside id="sidebar">
+    <nav>
+      <button class="nav-btn active" data-view="grid"><span class="nav-icon">⊞</span><span class="nav-label">Todos</span></button>
+      <button class="nav-btn" data-view="recent"><span class="nav-icon">◷</span><span class="nav-label">Recientes</span></button>
+      <button class="nav-btn" data-view="favorites"><span class="nav-icon">♥</span><span class="nav-label">Favoritos</span></button>
+    </nav>
+    <div class="sidebar-sep"></div>
+    <div id="folder-list-sidebar"></div>
+    <div class="sidebar-bottom">
+      <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span><span class="nav-label">Ajustes</span></button>
+    </div>
+  </aside>
+
+  <main id="content">
+    <div id="toolbar">
+      <div id="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Buscar juego..." autocomplete="off" />
+        <kbd id="search-clear" class="hidden">✕</kbd>
+      </div>
+      <div id="toolbar-actions">
+        <button class="btn-icon" id="btn-scan">↻ Escanear</button>
+        <button class="btn-icon accent" id="btn-add-folder">+ Carpeta</button>
+        <button class="btn-icon" id="btn-add-exe">+ .exe</button>
+      </div>
+      <div id="game-count"></div>
+    </div>
+
+    <div id="view-grid"      class="view active"></div>
+    <div id="view-recent"    class="view">
+      <div class="view-header"><h2>Jugados recientemente</h2></div>
+      <div id="recent-grid" class="game-grid"></div>
+    </div>
+    <div id="view-favorites" class="view">
+      <div class="view-header"><h2>Favoritos</h2></div>
+      <div id="fav-grid" class="game-grid"></div>
+    </div>
+    <div id="view-settings"  class="view">
+      <div class="view-header"><h2>⚙ Ajustes</h2></div>
+      <div id="settings-content"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Context menu -->
+<div id="ctx-menu" class="hidden">
+  <button id="ctx-launch">▶ Lanzar</button>
+  <button id="ctx-folder">📂 Abrir carpeta</button>
+  <button id="ctx-rename">✎ Renombrar</button>
+  <button id="ctx-remove" class="danger">✕ Eliminar</button>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Rename modal -->
+<div id="rename-modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Renombrar juego</h3>
+    <input id="rename-input" type="text" placeholder="Nuevo nombre" />
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeRename()">Cancelar</button>
+      <button class="btn-primary"   onclick="confirmRename()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     GAME PICKER MODAL
+═════════════════════════════════════════════════════════ -->
+<div id="game-picker-modal" class="modal hidden">
+  <div class="modal-box picker-box">
+    <h3>Añadir juego</h3>
+    <p class="picker-sub">Escribe el nombre del juego. Se buscará la portada automáticamente en Steam.</p>
+
+    <div class="picker-name-row">
+      <label>Nombre del juego</label>
+      <input id="picker-name" type="text" placeholder="ej: Phasmophobia, Alan Wake 2…"
+             autocomplete="off"
+             oninput="pickerOnNameInput()"
+             onkeydown="if(event.key==='Enter') pickerConfirm()" />
+    </div>
+
+    <div id="picker-preview" class="picker-preview hidden">
+      <div id="picker-preview-img" class="picker-preview-img"></div>
+      <div id="picker-preview-status" class="picker-preview-status"></div>
+    </div>
+
+    <div class="modal-btns" style="margin-top:14px">
+      <button class="btn-secondary" onclick="closeGamePicker()">Cancelar</button>
+      <button class="btn-primary" id="picker-confirm" onclick="pickerConfirm()">
+        ✓ Añadir juego
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
