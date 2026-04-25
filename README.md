@@ -1,37 +1,33 @@
-# Game Launcher
+#Game Launcher
+##Quick Start
+Double-click #GameLauncher Setup 1.0.0.exe
+Follow the installation steps
+Launch the app
+##Game Detection
+###Steam (Automatic)
 
-## Inicio rapido
+When you open the app for the first time, it automatically detects Steam libraries in common paths on drives C–G.
 
-1. Doble click en GameLauncher Setup 1.0.0.exe
-2. Seguir indicaciones
-3. Abrir
+You can also add libraries manually via: #Settings → Detect Steam
 
-## Deteccion de juegos
+###Custom Folders
 
-### Steam (automatico)
-Al abrir la app por primera vez, detecta automaticamente librerias de Steam en rutas comunes en unidades C-G
+Use #+ Folder in the toolbar.
+The scanner automatically filters out installers, runtimes, anti-cheat systems, and other executables that are NOT games, using a blacklist + size filter.
 
-Puedes anadir librerias manualmente con: Ajustes -> Detectar Steam
+###Individual Executable
 
-### Carpetas personalizadas
-Usa "+ Carpeta" en la barra de herramientas.
-El escaner filtra automaticamente instaladores, runtimes, anti-cheat y
-otros ejecutables que NO son juegos, usando una lista negra + filtro de tamaño.
+Use #+ .exe to manually add any game.
 
-### Ejecutable individual
-Usa "+ .exe" para anadir cualquier juego manualmente.
+##Requirements
+Windows 10/11 (64-bit)
+Node.js >= 18 → https://nodejs.org/
+##Add Custom Icon
+##Customize the UI
 
-## Requisitos
+Edit the CSS variables in src/css/style.css:
 
-- Windows 10/11 (64-bit)
-- Node.js >= 18  ->  https://nodejs.org/
-
-## Anadir icono personalizado
-
-## Personalizar la UI
-
-Edita las variables CSS en src\css\style.css:  
-  --accent    color principal (cambiable tambien desde dentro de la app)  
-  --bg        fondo  
-  --card      tarjetas de juegos  
-  --font-main tipografia principal  
+--accent → main color (can also be changed inside the app)
+--bg → background
+--card → game cards
+--font-main → main typography
